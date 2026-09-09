@@ -1,0 +1,13 @@
+{
+  "actual_negolog_import": true,
+  "reference_commit": "c13b4f791db9ba682e451d90baa3bc3e0bdf6052",
+  "traces": 20,
+  "prefixes_equal": 2000,
+  "initial_issue_counts": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

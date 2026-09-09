@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="704" viewBox="0 0 640 704" role="img" aria-labelledby="title desc">
+  <title id="title">From opponent offers to negotiation decisions</title>
+  <desc id="desc">Offers feed aggregated comparison evidence. CBOM estimates opponent preferences. The Hybrid strategy selects a target utility and scores candidate offers. The agent offers, accepts, or ends negotiation.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#466573" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="640" height="704" rx="20" fill="#f5f9fb"/>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="40" y="47" font-size="26" font-weight="700" fill="#173345">How CBOM negotiates</text>
+    <text x="40" y="78" font-size="19" fill="#405f70">One received offer updates the next decision.</text>
+    <rect x="40" y="106" width="560" height="108" rx="12" fill="#e4eef7" stroke="#b1c9dc"/>
+    <text x="61" y="142" font-size="23" font-weight="700" fill="#183f61">1  Observe an opponent offer</text>
+    <text x="61" y="174" font-size="19" fill="#284a60">Compare changed values with earlier offers.</text>
+    <text x="61" y="199" font-size="19" fill="#284a60">Count repeated evidence without storing each pair.</text>
+    <path d="M320,219 V248" stroke="#466573" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="40" y="257" width="560" height="108" rx="12" fill="#dff2ed" stroke="#8bbcaf"/>
+    <text x="61" y="293" font-size="23" font-weight="700" fill="#155546">2  Update the preference estimate</text>
+    <text x="61" y="325" font-size="19" fill="#26594e">Infer value orderings and issue importance.</text>
+    <text x="61" y="350" font-size="19" fill="#26594e">Turn ranks into estimated additive utilities.</text>
+    <path d="M320,370 V399" stroke="#466573" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="40" y="408" width="560" height="108" rx="12" fill="#f7eddc" stroke="#d5b98a"/>
+    <text x="61" y="444" font-size="23" font-weight="700" fill="#70501d">3  Choose a candidate offer</text>
+    <text x="61" y="476" font-size="19" fill="#6a542d">Set a target from time and recent concessions.</text>
+    <text x="61" y="501" font-size="19" fill="#6a542d">After warmup, score own × estimated utility.</text>
+    <path d="M320,521 V550" stroke="#466573" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="40" y="559" width="560" height="108" rx="12" fill="#e9e7f4" stroke="#b7afcf"/>
+    <text x="61" y="595" font-size="23" font-weight="700" fill="#483d70">4  Offer, accept, or end</text>
+    <text x="61" y="627" font-size="19" fill="#514766">Apply acceptance and reservation rules.</text>
+    <text x="61" y="652" font-size="19" fill="#514766">Record the decision and search settings.</text>
+  </g>
+</svg>

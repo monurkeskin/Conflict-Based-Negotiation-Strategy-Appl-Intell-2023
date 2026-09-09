@@ -1,0 +1,114 @@
+{
+  "kind": "synthetic implementation benchmark",
+  "platform": "macOS-15.7.8-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.10.20",
+  "domain": {
+    "issues": 3,
+    "values_per_issue": 4,
+    "outcomes": 64
+  },
+  "measurements": [
+    {
+      "rounds": 50,
+      "trials": [
+        {
+          "seed": 0,
+          "reference_seconds": 0.017026959074428305,
+          "aggregated_seconds": 0.002877794991945848,
+          "comparisons": 1208,
+          "evidence_cells": 389,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 1,
+          "reference_seconds": 0.017420748947188258,
+          "aggregated_seconds": 0.0029117489757481962,
+          "comparisons": 1207,
+          "evidence_cells": 398,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 2,
+          "reference_seconds": 0.01765783893642947,
+          "aggregated_seconds": 0.0027678361220750958,
+          "comparisons": 1209,
+          "evidence_cells": 385,
+          "every_prefix_equal": true
+        }
+      ],
+      "reference_seconds_median": 0.017420748947188258,
+      "aggregated_seconds_median": 0.002877794991945848,
+      "median_time_ratio": 6.053505894597814
+    },
+    {
+      "rounds": 100,
+      "trials": [
+        {
+          "seed": 0,
+          "reference_seconds": 0.13755141690489836,
+          "aggregated_seconds": 0.00836629091645591,
+          "comparisons": 4864,
+          "evidence_cells": 444,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 1,
+          "reference_seconds": 0.1379197109490633,
+          "aggregated_seconds": 0.008540543145500124,
+          "comparisons": 4879,
+          "evidence_cells": 466,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 2,
+          "reference_seconds": 0.14216037606820464,
+          "aggregated_seconds": 0.008498834038618952,
+          "comparisons": 4872,
+          "evidence_cells": 462,
+          "every_prefix_equal": true
+        }
+      ],
+      "reference_seconds_median": 0.1379197109490633,
+      "aggregated_seconds_median": 0.008498834038618952,
+      "median_time_ratio": 16.22807438318622
+    },
+    {
+      "rounds": 200,
+      "trials": [
+        {
+          "seed": 0,
+          "reference_seconds": 1.0815197500633076,
+          "aggregated_seconds": 0.020648658013669774,
+          "comparisons": 19563,
+          "evidence_cells": 468,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 1,
+          "reference_seconds": 1.0782244139700197,
+          "aggregated_seconds": 0.02039574718219228,
+          "comparisons": 19574,
+          "evidence_cells": 468,
+          "every_prefix_equal": true
+        },
+        {
+          "seed": 2,
+          "reference_seconds": 1.0713317889894824,
+          "aggregated_seconds": 0.02143245076877065,
+          "comparisons": 19601,
+          "evidence_cells": 468,
+          "every_prefix_equal": true
+        }
+      ],
+      "reference_seconds_median": 1.0782244139700197,
+      "aggregated_seconds_median": 0.020648658013669774,
+      "median_time_ratio": 52.21765081567123
+    }
+  ],
+  "separate_tracemalloc_peak_bytes": {
+    "rounds": 200,
+    "reference": 5939327,
+    "aggregated": 79148
+  }
+}

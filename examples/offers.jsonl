@@ -1,0 +1,4 @@
+{"delivery":"next_month","support":"self_service","payment":"upfront"}
+{"delivery":"next_week","support":"self_service","payment":"upfront"}
+{"delivery":"next_week","support":"standard","payment":"upfront"}
+{"delivery":"this_week","support":"standard","payment":"30_days"}

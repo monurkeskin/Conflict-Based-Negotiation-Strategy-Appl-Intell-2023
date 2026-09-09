@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=77,<83"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cbom-negotiation"
+version = "1.0.0"
+description = "Conflict-based opponent modeling and the paper's negotiation strategy"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-only"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "Mehmet Onur Keskin"}]
+keywords = ["negotiation", "opponent-modeling", "multi-agent-systems", "CBOM"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/monurkeskin/CBOM"
+Paper = "https://doi.org/10.1007/s10489-023-05001-9"
+Issues = "https://github.com/monurkeskin/CBOM/issues"
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2", "build==1.3.0", "ruff==0.12.12"]
+
+[project.scripts]
+cbom = "cbom.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cbom = ["py.typed", "data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+extend-exclude = ["tests/reference/negolog_v2_cbom.py"]  # Verbatim, hash-verified third-party oracle.
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
