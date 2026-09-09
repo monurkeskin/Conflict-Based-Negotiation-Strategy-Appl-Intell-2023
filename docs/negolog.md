@@ -68,8 +68,9 @@ result with an explicit reason, rather than treating it as an agent exception.
 The Python core is the same public source used by this package. Java is a native
 port. Language-parity tests check complete decisions and learned preferences on
 deterministic traces; read the [Java guide](../java/README.md) for the pinned
-CPython 3.10 sorting rule on cyclic rankings. Do not infer unrestricted bitwise
-equivalence from matching examples.
+CPython 3.10 sorting rule on cyclic rankings. Use Python 3.10 for cross-language
+comparisons; newer Python versions can differ even on short cyclic rankings.
+Do not infer unrestricted bitwise equivalence from matching examples.
 
 Exact and sampled search keep the same meaning as in [usage.md](usage.md).
 The standalone model avoids outcome enumeration, but NegoLog itself can enumerate

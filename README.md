@@ -58,8 +58,9 @@ The integration scope is:
 
 Java implements the same documented equations and evidence updates. Tests compare
 model states, exact and sampled candidates, and decisions across languages.
-Its CPython 3.10 sorting reference for cyclic rankings is documented in the
-[Java guide](java/README.md); unrestricted bitwise identity is not claimed.
+For cross-language comparisons, use **CPython 3.10**: Java pins that sorting
+reference. Newer Python versions can resolve cyclic rankings differently, even
+on short lists. See the [Java guide](java/README.md) for the tested parity scope.
 This Java engine is framework-neutral; a GENIUS-specific plugin is not bundled.
 
 ## Run your first negotiation

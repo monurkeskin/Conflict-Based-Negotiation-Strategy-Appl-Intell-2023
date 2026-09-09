@@ -1,6 +1,7 @@
 """Executable cross-language regressions against the native JDK-only implementation."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import random
@@ -18,6 +19,45 @@ from cbom.preferences import Preference
 from cbom.strategy import CBOMAgent
 
 ROOT = Path(__file__).resolve().parents[1]
+PROTOCOL_REFERENCE = ROOT / "tests/reference/cpython310-protocol.json"
+IS_CPYTHON310 = sys.implementation.name == "cpython" and sys.version_info[:2] == (3, 10)
+live_cpython310 = pytest.mark.skipif(
+    not IS_CPYTHON310,
+    reason="Java targets CPython 3.10 sorting; complete frozen protocol traces run on every runtime",
+)
+
+
+def read_protocol_reference():
+    """Decode lossless object interning; every request/response field is retained."""
+    data = json.loads(PROTOCOL_REFERENCE.read_text(encoding="utf-8"))
+    if data["format"] != "cbom-cpython310-protocol-v1":
+        raise ValueError("Unsupported protocol reference format")
+    nodes = data["nodes"]
+    decoded = {}
+
+    def decode(value):
+        if isinstance(value, dict):
+            if set(value) == {"$ref"}:
+                index = value["$ref"]
+                if index not in decoded:
+                    decoded[index] = decode(nodes[index])
+                return decoded[index]
+            return {key: decode(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [decode(item) for item in value]
+        return value
+
+    payload = decode(data["payload"])
+    if len(payload["traces"]) != 26 or len(payload["cli"]) != 5:
+        raise ValueError("The CPython 3.10 protocol reference is incomplete")
+    return payload
+
+
+if __name__ == "__main__":
+    PROTOCOL_TRACES, CLI_REFERENCE = [], {}
+else:
+    _reference = read_protocol_reference()
+    PROTOCOL_TRACES, CLI_REFERENCE = _reference["traces"], _reference["cli"]
 
 
 @pytest.fixture(scope="module")
@@ -38,6 +78,7 @@ def java_jar():
 
 class Bridge:
     def __init__(self, java_jar, profile, **options):
+        self._close_sent = False
         self.process = subprocess.Popen(
             [java_jar[0], "-jar", str(java_jar[1]), "serve"], stdin=subprocess.PIPE,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8",
@@ -51,13 +92,16 @@ class Bridge:
         assert line, self.process.stderr.read()
         reply = json.loads(line)
         assert reply["ok"] is not expect_error, reply
+        self.last_response = reply
+        if operation == "close":
+            self._close_sent = True
         return reply if expect_error else reply["result"]
 
     def __enter__(self):
         return self
 
     def __exit__(self, *_):
-        if self.process.poll() is None:
+        if self.process.poll() is None and not self._close_sent:
             self.request("close")
         self.process.communicate(timeout=10)
         assert self.process.returncode == 0
@@ -96,6 +140,7 @@ def random_profile(seed, issues=4, values=5):
 
 
 @pytest.mark.parametrize("seed", range(12))
+@live_cpython310
 def test_model_prefix_parity_with_ties_cycles_and_capped_history(java_jar, seed):
     profile = random_profile(seed, issues=1 + seed % 5, values=1 + seed % 6)
     rng = random.Random(seed + 991)
@@ -110,6 +155,7 @@ def test_model_prefix_parity_with_ties_cycles_and_capped_history(java_jar, seed)
 
 
 @pytest.mark.parametrize("seed", [47, 93])
+@live_cpython310
 def test_model_default_history_boundary(java_jar, seed):
     profile = random_profile(seed, issues=3, values=4)
     rng = random.Random(seed)
@@ -122,6 +168,7 @@ def test_model_default_history_boundary(java_jar, seed):
 
 
 @pytest.mark.parametrize("issues,values", [(63, 2), (2, 63)])
+@live_cpython310
 def test_short_sort_boundary_parity(java_jar, issues, values):
     profile = random_profile(281, issues=issues, values=values)
     model = ConflictBasedOpponentModel(profile)
@@ -136,6 +183,7 @@ def test_short_sort_boundary_parity(java_jar, issues, values):
 
 @pytest.mark.parametrize("mode", ["exact", "sampled"])
 @pytest.mark.parametrize("seed", [0, 1, -97, 2**65 + 13])
+@live_cpython310
 def test_strategy_decisions_and_integer_seeded_sample_parity(java_jar, mode, seed):
     profile = random_profile(abs(seed) % 30, issues=4, values=5)
     options = {"mode": mode, "seed": seed, "sample_size": 80}
@@ -198,7 +246,10 @@ def test_standalone_java_demo_matches_python(java_jar, tmp_path, mode):
     target = tmp_path / "demo.json"
     subprocess.run([java_jar[0], "-jar", str(java_jar[1]), "demo", "--search-mode", mode,
                     "--sample-size", "40", "--output", str(target)], check=True, capture_output=True, text=True)
-    expected = negotiate(example_profile("a"), example_profile("b"), mode=mode, sample_size=40)
+    expected = CLI_REFERENCE[f"demo-{mode}"]
+    if IS_CPYTHON310:
+        assert_equivalent(expected, negotiate(example_profile("a"), example_profile("b"),
+                                             mode=mode, sample_size=40))
     assert_equivalent(json.loads(target.read_text()), expected)
 
 
@@ -216,9 +267,13 @@ def test_native_self_tests_and_standalone_learning(java_jar, tmp_path):
     offers_path.write_text("\n".join(map(json.dumps, bids)), encoding="utf-8")
     subprocess.run([java_jar[0], "-jar", str(java_jar[1]), "learn", "--profile", str(profile_path),
                     "--offers", str(offers_path), "--output", str(output)], check=True, capture_output=True, text=True)
-    assert_equivalent(json.loads(output.read_text()), model.preference.to_dict())
+    expected = CLI_REFERENCE["learn"]
+    if IS_CPYTHON310:
+        assert_equivalent(expected, model.preference.to_dict())
+    assert_equivalent(json.loads(output.read_text()), expected)
 
 
+@live_cpython310
 def test_large_acyclic_value_order_and_large_domain(java_jar):
     # 80 values exceeds the Python short-list sorting path, but acyclic evidence
     # has one total ordering and therefore remains equivalent.
@@ -270,7 +325,9 @@ def test_standalone_demo_serializes_arbitrary_integer_seed(java_jar, tmp_path):
                    check=True, capture_output=True, text=True)
     actual = json.loads(output.read_text())
     assert actual["settings"]["seed"] == seed
-    expected = negotiate(example_profile("a"), example_profile("b"), rounds=1, seed=seed)
+    expected = CLI_REFERENCE["demo-huge-seed"]
+    if IS_CPYTHON310:
+        assert_equivalent(expected, negotiate(example_profile("a"), example_profile("b"), rounds=1, seed=seed))
     assert_equivalent(actual, expected)
 
 
@@ -287,3 +344,140 @@ def test_protocol_rejects_nonhex_unicode_escapes_atomically(java_jar, escape):
         assert not reply["ok"]
         assert "Invalid Unicode escape" in reply["error"]
         assert bridge.request("inspect") == before
+
+
+@pytest.mark.parametrize("case", PROTOCOL_TRACES, ids=lambda case: case["id"])
+def test_complete_protocol_matches_frozen_cpython310_on_every_runtime(java_jar, case):
+    initial = case["events"][0]
+    assert initial["request"]["op"] == "init"
+    profile = Preference.from_dict(initial["request"]["profile"])
+    with Bridge(java_jar, profile, **initial["request"]["options"]) as bridge:
+        assert_equivalent(bridge.last_response, initial["response"])
+        for index, event in enumerate(case["events"][1:]):
+            request, expected = event["request"], event["response"]
+            bridge.request(request["op"], **{key: value for key, value in request.items() if key != "op"})
+            try:
+                assert_equivalent(bridge.last_response, expected)
+            except AssertionError as error:
+                raise AssertionError(f"{case['id']} event {index + 1}: {request}") from error
+
+
+def write_protocol_reference():
+    """Record canonical Python 3.10 execution; Java is never called by this writer.
+
+    Full requests/responses are stored with lossless object interning to avoid
+    repeating profiles and rankings thousands of times. Regenerate deliberately
+    with `python tests/test_java_parity.py --write-protocol-reference` on 3.10.
+    """
+    if not IS_CPYTHON310:
+        raise SystemExit("Generate the protocol reference only with actual CPython 3.10")
+    traces = []
+    active_id = ""
+
+    class Recorder:
+        def __init__(self, _java, profile, **options):
+            self.events = []
+            self.options = dict(options)
+            core_options = dict(options)
+            history_size = core_options.pop("history_size", 1000)
+            self.agent = CBOMAgent(profile, model=ConflictBasedOpponentModel(profile, history_size), **core_options)
+            self.initial = self.record({"op": "init", "profile": profile.to_dict(), "options": options},
+                                       state(self.agent.model))
+
+        def record(self, request, result):
+            response = {"ok": True, "result": result}
+            if request["op"] == "act":
+                response["action"] = result
+            # Detach mutable model ordering containers at this prefix.
+            self.events.append(json.loads(json.dumps({"request": request, "response": response})))
+            return result
+
+        def request(self, op, **kwargs):
+            if op == "receive":
+                self.agent.receive(kwargs["bid"], kwargs["t"])
+                result = state(self.agent.model)
+            elif op == "act":
+                result = asdict(self.agent.act(kwargs["t"]))
+            elif op == "inspect":
+                result = state(self.agent.model)
+            else:
+                raise ValueError(f"Unexpected recorder operation: {op}")
+            return self.record({"op": op, **kwargs}, result)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, error_type, *_):
+            if error_type is not None:
+                return
+            self.record({"op": "close"}, None)
+            traces.append({"id": active_id, "events": self.events})
+
+    global Bridge
+    original_bridge = Bridge
+    try:
+        Bridge = Recorder
+        for seed in range(12):
+            active_id = f"model-prefix-{seed}"
+            test_model_prefix_parity_with_ties_cycles_and_capped_history(None, seed)
+        for seed in [47, 93]:
+            active_id = f"history-boundary-{seed}"
+            test_model_default_history_boundary(None, seed)
+        for issues, values in [(63, 2), (2, 63)]:
+            active_id = f"rank-boundary-{issues}-{values}"
+            test_short_sort_boundary_parity(None, issues, values)
+        for seed in [0, 1, -97, 2**65 + 13]:
+            for mode in ["exact", "sampled"]:
+                active_id = f"strategy-{mode}-{seed}"
+                test_strategy_decisions_and_integer_seeded_sample_parity(None, mode, seed)
+        active_id = "large-acyclic-80"
+        before = len(traces)
+        test_large_acyclic_value_order_and_large_domain(None)
+        traces[before + 1]["id"] = "large-sampled-domain"
+    finally:
+        Bridge = original_bridge
+
+    cli = {f"demo-{mode}": negotiate(example_profile("a"), example_profile("b"), mode=mode, sample_size=40)
+           for mode in ["auto", "exact", "sampled"]}
+    cli["demo-huge-seed"] = negotiate(example_profile("a"), example_profile("b"), rounds=1, seed=10**400)
+    profile = example_profile("a")
+    model = ConflictBasedOpponentModel(profile)
+    for bid in [profile.best_bid(), {i: profile.domain[i][-1] for i in profile.issues}] * 10:
+        model.update(bid)
+    cli["learn"] = model.preference.to_dict()
+    payload = {"traces": traces, "cli": cli}
+    nodes, indices = [], {}
+
+    def intern(value):
+        if isinstance(value, dict):
+            node = {key: intern(item) for key, item in value.items()}
+        elif isinstance(value, list):
+            node = [intern(item) for item in value]
+        else:
+            return value
+        key = json.dumps(node, ensure_ascii=True, separators=(",", ":"))
+        if key not in indices:
+            indices[key] = len(nodes)
+            nodes.append(node)
+        return {"$ref": indices[key]}
+
+    packed = intern(payload)
+    sources = {f"src/cbom/{name}.py": hashlib.sha256((ROOT / f"src/cbom/{name}.py").read_bytes()).hexdigest()
+               for name in ["model", "strategy", "preferences", "search", "cli"]}
+    header = {"format": "cbom-cpython310-protocol-v1", "generator": "tests/test_java_parity.py:write_protocol_reference",
+              "python": sys.version, "source_sha256": sources,
+              "description": "Complete actual CPython 3.10 requests and responses. Object interning is lossless; no Java-generated expectations or omitted state fields.",
+              "trace_count": len(traces), "event_count": sum(len(case["events"]) for case in traces),
+              "cli_count": len(cli), "nodes": nodes, "payload": packed}
+    # One interned node per line keeps source diffs readable without excessive whitespace.
+    node_text = ",\n".join(json.dumps(node, ensure_ascii=True, separators=(",", ":")) for node in nodes)
+    del header["nodes"]
+    prefix = json.dumps(header, indent=2)[:-2]
+    PROTOCOL_REFERENCE.write_text(prefix + ',\n  "nodes": [\n' + node_text + '\n  ]\n}\n', encoding="utf-8")
+    print(f"Recorded {len(traces)} traces / {header['event_count']} complete protocol events and {len(cli)} CLI results")
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] != ["--write-protocol-reference"]:
+        raise SystemExit("Usage: python tests/test_java_parity.py --write-protocol-reference")
+    write_protocol_reference()
