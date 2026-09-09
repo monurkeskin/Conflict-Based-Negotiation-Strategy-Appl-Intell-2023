@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.0 — 2026-09-09
+
+- Add a native Java CBOM model and negotiation strategy, runnable JAR, standalone
+  demo and persistent JSON-lines protocol, with no third-party Java libraries.
+- Compare Java/Python model updates, candidate selection and complete actions;
+  document deterministic sorting choices and language-parity limits.
+- Integrate Python and Java agents into both maintained NegoLog distributions,
+  with explicit termination, process cleanup and executable examples.
+- Add an integration guide, deployment diagram and public-source synchronization
+  tool with hashed provenance for independently runnable framework checkouts.
+- Retain the Python learning implementation and 1.0.1 boundary corrections.
+
 ## 1.0.1 — 2026-09-09
 
 - Apply the reservation floor consistently in search and agent decisions.

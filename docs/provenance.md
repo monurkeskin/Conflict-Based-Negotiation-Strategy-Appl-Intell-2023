@@ -73,6 +73,13 @@ and strategy settings when publishing an experiment using this code.
 
 ## What the evidence supports
 
+Version 1.1 adds a native Java port of this maintained implementation and NegoLog
+adapters for both languages. The Java port is new implementation work, not the
+historical Java prototype. Differential tests and the [Java guide](../java/README.md)
+state the checked parity scope and sorting choices for long cyclic rankings.
+The published paper supplies the strategy specification; the public Python
+implementation supplies the Java behavioral reference.
+
 The article reports human-agent and automated-negotiation experiments. Those
 findings belong to the article and its protocol. This repository does not
 redistribute the original participant records or establish a new replication of

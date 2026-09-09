@@ -3,7 +3,7 @@
 Learn an opponent's preferences from their offers, then use those estimates to
 choose negotiation offers that balance both parties' interests.
 
-Maintained Python code for **[Conflict-Based Negotiation Strategy for Human-Agent
+Maintained Python and Java code for **[Conflict-Based Negotiation Strategy for Human-Agent
 Negotiation](https://doi.org/10.1007/s10489-023-05001-9)** — Mehmet Onur Keskin,
 Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 
@@ -13,6 +13,7 @@ Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 [![Paper DOI](https://img.shields.io/badge/Paper-10.1007%2Fs10489--023--05001--9-006b75)](https://doi.org/10.1007/s10489-023-05001-9)
 
 [Quick start](#run-your-first-negotiation) · [Usage guide](docs/usage.md) ·
+[Java](#run-the-java-agent) · [NegoLog integration](docs/negolog.md) ·
 [How it works](docs/method.md) · [Performance](docs/performance.md) ·
 [Cite the paper](#cite-the-paper)
 
@@ -25,16 +26,19 @@ Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 | See a complete negotiation in a minute | `cbom demo` |
 | Estimate preferences from a sequence of offers | [Model-only API](#use-the-opponent-model-on-its-own) or `cbom learn` |
 | Use the paper's offering and acceptance strategy | [CBOMAgent integration](docs/usage.md#integrate-the-agent) |
+| Run the native Java implementation | [Java quickstart](#run-the-java-agent) and [API guide](java/README.md) |
+| Compare CBOM against framework agents | [NegoLog integration](docs/negolog.md) |
 | Work with your own issues and values | [Profile format](docs/usage.md#define-your-domain) |
 | Handle large outcome spaces | [Exact and sampled search](docs/usage.md#choose-a-search-mode) |
 | Understand what matches the published method | [Method choices](docs/method.md) and [source provenance](docs/provenance.md) |
 
-The package has **no runtime dependencies** and works with Python 3.10 or newer.
+The Python package has **no runtime dependencies** and works with Python 3.10 or newer.
+The native Java engine uses **JDK 17+**, without third-party Java libraries.
 CBOM updates do not enumerate the outcome space. The agent uses exact candidate
 search for small domains and a bounded, explicitly reported sample for larger
 ones. It is designed for bilateral, discrete, additive-utility negotiation.
 
-**Version 1.0.1 is a maintained implementation.** Its opponent model preserves
+**Version 1.1.0 is a maintained implementation.** Its Python opponent model preserves
 the finalized public [NegoLog V2](https://github.com/monurkeskin/NegoLogV2) behavior
 using more compact evidence storage. Its negotiation strategy implements the
 paper's Algorithm 2 with documented defaults and edge-case handling. The current
@@ -48,9 +52,15 @@ The integration scope is:
 | --- | --- |
 | Opponent learning | Finalized public CBOM behavior, implemented with aggregated evidence |
 | Negotiation policy | The paper's Algorithm 2, with explicit startup, search and termination choices |
-| Execution | Standalone Python agent, model API and a local alternating-offers runner |
-| Framework interoperability | NegoLog-style JSON profiles; dedicated NegoLog/GENIUS adapters are not bundled |
+| Execution | Standalone Python and native Java agents, model APIs and local alternating-offers runners |
+| Framework interoperability | NegoLog Python/Java agents with bundled engines; shared JSON profiles and a Java process protocol |
 | Historical project | Selected, attributed strategy lineage; the full legacy application and original human-study environment are not bundled |
+
+Java implements the same documented equations and evidence updates. Tests compare
+model states, exact and sampled candidates, and decisions across languages.
+Its CPython 3.10 sorting reference for cyclic rankings is documented in the
+[Java guide](java/README.md); unrestricted bitwise identity is not claimed.
+This Java engine is framework-neutral; a GENIUS-specific plugin is not bundled.
 
 ## Run your first negotiation
 
@@ -84,6 +94,28 @@ This is a deterministic **synthetic example**, with no account, server, robot,
 dataset download or model training required. Use `python -m cbom` if your shell
 cannot find the `cbom` command. Installation is from this repository; no PyPI
 publication is implied.
+
+## Run the Java agent
+
+From the same checkout, with JDK 17+ available:
+
+```bash
+java -version
+javac -version
+python java/build.py
+java -jar java/build/cbom.jar demo --output outputs/java-demo.json
+```
+
+The JAR runs its own CBOM model and strategy using the bundled synthetic
+profiles. Python is used by the portable build helper, not by Java's negotiation
+engine. The [Java guide](java/README.md) also covers the native API, manual
+compilation and JSON-lines protocol. The JAR needs no Python installation to run.
+
+![CBOM engines can run independently or negotiate inside NegoLog.](docs/assets/integrations.svg)
+
+To run tournaments, use the [NegoLog guide](docs/negolog.md). Both NegoLog
+distributions include `CBOMAgent` and `CBOMJavaAgent` integrations with their own
+copy of this public engine; no cross-repository filesystem layout is required.
 
 ## Use the opponent model on its own
 
@@ -148,7 +180,8 @@ python benchmarks/compare_models.py --output outputs/model-benchmark.json
 
 Tests cover model equivalence, history expiration, tied and cyclic evidence,
 offer selection, model-to-agent integration, reservation values, deadline and
-exhaustion handling, invalid inputs and command-line examples.
+exhaustion handling, invalid inputs and command-line examples. Install JDK 17+
+to include Java/Python differential checks; CI installs it explicitly.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and reporting an issue.
 
 ## Cite the paper

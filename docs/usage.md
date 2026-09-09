@@ -2,6 +2,9 @@
 
 [Back to README](../README.md) · [Method and settings](method.md) · [Performance](performance.md)
 
+For the native Java API or CLI, see [the Java guide](../java/README.md).
+For ready-to-run Python/Java agents inside NegoLog, see [framework integration](negolog.md).
+
 ## Define your domain
 
 A domain contains discrete issues, each with possible string values. A profile

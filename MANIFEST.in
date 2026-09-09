@@ -1,6 +1,9 @@
 include CITATION.bib CITATION.cff CHANGELOG.md CONTRIBUTING.md NOTICE LICENSE
 recursive-include docs *.md *.svg
 recursive-include examples *.py *.json *.jsonl
-recursive-include tests *.py
+recursive-include tests *.py *.json
 recursive-include benchmarks *.py *.json
+recursive-include java *.java *.py *.md *.json *.jsonl
+include java/LICENSE java/NOTICE java/PSF-LICENSE
+recursive-include tools *.py
 global-exclude __pycache__ *.py[cod]
