@@ -1,0 +1,2 @@
+# Keep the frozen public reference byte-identical on every supported platform.
+* text=auto eol=lf
