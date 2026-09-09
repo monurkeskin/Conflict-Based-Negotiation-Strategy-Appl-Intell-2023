@@ -128,6 +128,19 @@ def test_no_feasible_outcome_ends_without_invalid_offer():
     assert agent.own_history == ()
 
 
+@pytest.mark.parametrize("mode", ["exact", "sampled"])
+def test_near_reservation_candidate_does_not_hide_a_feasible_offer(mode):
+    preference = profile({"best": .9, "near": .8 - 5e-13, "feasible": .85, "bad": 0},
+                         reservation=.8)
+    agent = CBOMAgent(preference, epsilon=0, mode=mode, sample_size=64, seed=0)
+    assert agent.act(0).bid == bid("best")
+    agent.receive(bid("bad"), .8)
+    action = agent.act(.8)
+    assert action.kind == "offer"
+    assert action.bid == bid("feasible")
+    assert action.own_utility >= preference.reservation
+
+
 def test_exhausted_pool_ends_without_repeating_an_offer():
     agent = CBOMAgent(profile({"only": 1}))
     assert agent.act(0).kind == "offer"
@@ -199,6 +212,16 @@ def test_session_is_closed_after_terminal_action():
         agent.receive(bid("b"), .2)
     with pytest.raises(RuntimeError, match="ended"):
         agent.act(.2)
+
+
+def test_counteroffer_expires_received_offer_until_received_again():
+    agent = CBOMAgent(profile(), model_threshold=99)
+    agent.receive(bid("b"), 0.)
+    assert agent.act(0.).kind == "offer"
+    # A later callback without a new opponent offer cannot accept the old one.
+    assert agent.act(.8).kind == "offer"
+    agent.receive(bid("b"), .81)
+    assert agent.act(.81).kind == "accept"
 
 
 @pytest.mark.parametrize("kwargs", [

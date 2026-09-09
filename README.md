@@ -34,13 +34,23 @@ CBOM updates do not enumerate the outcome space. The agent uses exact candidate
 search for small domains and a bounded, explicitly reported sample for larger
 ones. It is designed for bilateral, discrete, additive-utility negotiation.
 
-**Version 1.0.0 is a maintained implementation.** Its opponent model preserves
+**Version 1.0.1 is a maintained implementation.** Its opponent model preserves
 the finalized public [NegoLog V2](https://github.com/monurkeskin/NegoLogV2) behavior
 using more compact evidence storage. Its negotiation strategy implements the
 paper's Algorithm 2 with documented defaults and edge-case handling. The current
 issue-weight formula differs from the paper, and these examples do not reproduce
 the original human studies or tournament results. See the
 [implementation differences](docs/provenance.md#what-changed).
+
+The integration scope is:
+
+| Component | Included in this repository |
+| --- | --- |
+| Opponent learning | Finalized public CBOM behavior, implemented with aggregated evidence |
+| Negotiation policy | The paper's Algorithm 2, with explicit startup, search and termination choices |
+| Execution | Standalone Python agent, model API and a local alternating-offers runner |
+| Framework interoperability | NegoLog-style JSON profiles; dedicated NegoLog/GENIUS adapters are not bundled |
+| Historical project | Selected, attributed strategy lineage; the full legacy application and original human-study environment are not bundled |
 
 ## Run your first negotiation
 

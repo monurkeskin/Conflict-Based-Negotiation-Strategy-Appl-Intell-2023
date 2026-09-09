@@ -65,10 +65,11 @@ class Preference:
     def _unit(value: float, name: str) -> float:
         if isinstance(value, bool) or not isinstance(value, (float, int)):
             raise ValueError(f"{name} must be a finite number in [0, 1]")
-        value = float(value)
-        if not math.isfinite(value) or not 0 <= value <= 1:
+        # Check bounds before float conversion so oversized JSON integers also
+        # produce the documented input error, rather than OverflowError.
+        if not 0 <= value <= 1 or not math.isfinite(value):
             raise ValueError(f"{name} must be a finite number in [0, 1]")
-        return value
+        return float(value)
 
     def validate_bid(self, bid: Bid) -> tuple[str, ...]:
         """Validate a complete bid and return its canonical immutable encoding."""

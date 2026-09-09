@@ -91,6 +91,19 @@ def test_reservation_guard():
         CandidatePool(impossible).select(.8)
 
 
+def test_reservation_is_strict_even_when_inside_band_tolerance():
+    profile = Preference({"x": 1.}, {"x": {"near": .8 - 5e-13, "feasible": .85}}, .8)
+    result = CandidatePool(profile).select(.8, epsilon=0.)
+    assert result.bid == {"x": "feasible"}
+    assert result.own_utility >= profile.reservation
+
+
+@pytest.mark.parametrize("mode", [[], {}, None, 7])
+def test_invalid_search_mode_is_a_value_error(profile, mode):
+    with pytest.raises(ValueError, match="Search mode"):
+        CandidatePool(profile, mode=mode)
+
+
 @pytest.mark.parametrize("invalid", [math.nan, math.inf, -.1, 1.1, True])
 def test_invalid_target(profile, invalid):
     with pytest.raises(ValueError):

@@ -36,7 +36,7 @@ class CandidatePool:
     def __init__(self, preference: Preference, mode: str = "auto",
                  max_exact_outcomes: int = 50_000, sample_size: int = 4096,
                  seed: int = 0):
-        if mode not in {"auto", "exact", "sampled"}:
+        if not isinstance(mode, str) or mode not in {"auto", "exact", "sampled"}:
             raise ValueError("Search mode must be auto, exact or sampled")
         for name, value in [("max_exact_outcomes", max_exact_outcomes), ("sample_size", sample_size)]:
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -84,7 +84,7 @@ class CandidatePool:
             raise ValueError("Opponent profile must have the same ordered domain")
         nearest = math.inf
         for utility, bid in self._entries:
-            if bid not in excluded and utility + 1e-12 >= self.preference.reservation:
+            if bid not in excluded and utility >= self.preference.reservation:
                 nearest = min(nearest, abs(utility - target))
         if not math.isfinite(nearest):
             raise NoAvailableBid("No unused bid at or above reservation remains in the candidate pool")
@@ -96,7 +96,7 @@ class CandidatePool:
         best = -math.inf
         count = 0
         for utility, encoded in self._entries[left:right]:
-            if encoded in excluded or utility + 1e-12 < self.preference.reservation:
+            if encoded in excluded or utility < self.preference.reservation:
                 continue
             count += 1
             bid = dict(zip(self.preference.issues, encoded))

@@ -269,8 +269,10 @@ reservation utility. They find the first nonempty band on the
 `epsilon + k * 0.01` grid, then maximize own utility or the estimated utility
 product within that band. The implementation skips empty expansion iterations
 using the nearest available utility distance. A tolerance of `1e-12` is used at
-band and reservation boundaries to handle floating-point arithmetic. Tied scores
-keep the first candidate in the stable utility-sorted pool.
+the utility-band boundaries. Reservation filtering uses the same strict lower
+bound as the agent's offer and acceptance checks; it never admits an offer below
+reservation through that tolerance. Tied scores keep the first candidate in the
+stable utility-sorted pool.
 
 Every `Selection` reports its `exact` flag, effective `epsilon` and
 `candidate_count`. Here, **exact means complete candidate-pool enumeration**;

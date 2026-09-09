@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1 — 2026-09-09
+
+- Apply the reservation floor consistently in search and agent decisions.
+  A candidate just below reservation no longer hides a feasible offer and ends
+  the session prematurely; utility-band tolerance is retained.
+- Expire a received offer when counteroffering, preventing a later `act()` call
+  from accepting a previously declined offer without a new `receive()` event.
+- Report oversized JSON integers and malformed search modes as input errors.
+- Extend regression and end-to-end checks for boundary profiles and protocol state.
+
 ## 1.0.0 — 2026-09-09
 
 - Standalone, dependency-free CBOM model with cumulative transition counters.

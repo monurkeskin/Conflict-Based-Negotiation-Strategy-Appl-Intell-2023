@@ -33,6 +33,11 @@ additional check against the actual installed NegoLog implementation matched
 Measured 2026-09-09 on macOS / Apple Silicon, Python 3.10.20. Medians across the
 three seeds, for the **whole sequence** of updates:
 
+These recorded timings belong to the initial 1.0.0 implementation. Patch 1.0.1
+preserves the model's inference rules; it fixes reservation filtering, protocol
+state and invalid-input handling. The timings are not a new benchmark of that
+patch release.
+
 | Received offers | Reference time | Aggregated time | Ratio of median times |
 | --- | --- | --- | --- |
 | 50 | 0.0174 s | 0.00288 s | 6.1× |

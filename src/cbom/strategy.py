@@ -96,6 +96,7 @@ class CBOMAgent:
         self._offered: set[tuple[str, ...]] = set()
         self._last_time = 0.0
         self._terminal = False
+        self._pending_offer = False
 
     @property
     def own_history(self) -> tuple[dict[str, str], ...]:
@@ -129,6 +130,7 @@ class CBOMAgent:
         self._opponent_history.append(snapshot)
         self._opponent_utilities.append(utility)
         self._last_time = t
+        self._pending_offer = True
 
     def time_based(self, t: float) -> float:
         """The quadratic time component, evaluated without changing state."""
@@ -156,7 +158,7 @@ class CBOMAgent:
         return max(self.preference.reservation, min(maximum, target))
 
     def _can_accept(self, candidate_utility: float | None = None) -> bool:
-        if not self._opponent_utilities:
+        if not self._pending_offer:
             return False
         floor_candidates = self._own_utilities.copy()
         if candidate_utility is not None:
@@ -223,6 +225,9 @@ class CBOMAgent:
         self._own_history.append(bid)
         self._own_utilities.append(selection.own_utility)
         self._offered.add(self.preference.validate_bid(bid))
+        # A counteroffer declines the received offer. Repeated act() callbacks
+        # must not accept that old offer unless it is received again.
+        self._pending_offer = False
         return Action(
             "offer", dict(bid), selection.own_utility, target, selection,
             "own-utility opening" if opening else "hybrid candidate selection",

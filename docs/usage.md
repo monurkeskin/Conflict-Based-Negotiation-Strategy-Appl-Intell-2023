@@ -85,6 +85,11 @@ finite, nondecreasing and in `[0, 1]`. Start a new agent for each new session.
 An `accept` action refers to the latest received offer; an `end` action closes
 the session without agreement.
 
+Sending a counteroffer declines that received offer. A later `act()` call can
+produce another proposal, but it cannot accept the declined offer unless the
+opponent sends it again. Normal alternating sessions call `receive()` before
+each response; the local demo follows that protocol.
+
 Before three opponent offers, candidate selection maximizes own utility. From
 the third offer onward, it maximizes own utility × CBOM's estimated opponent
 utility. The model still learns during warmup. Configure a different warmup with

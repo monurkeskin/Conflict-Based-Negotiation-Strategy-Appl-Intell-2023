@@ -78,3 +78,23 @@ def test_malformed_profile_reports_input_error(tmp_path, capsys, data):
     message = capsys.readouterr().err
     assert "error:" in message
     assert "Traceback" not in message
+
+
+@pytest.mark.parametrize("field", ["issue", "value", "reservation"])
+def test_oversized_profile_integer_reports_input_error(tmp_path, capsys, field):
+    data = {"issueWeights": {"x": 1}, "issues": {"x": {"a": 1}}, "reservationValue": 0}
+    huge = 10 ** 400
+    if field == "issue":
+        data["issueWeights"]["x"] = huge
+    elif field == "value":
+        data["issues"]["x"]["a"] = huge
+    else:
+        data["reservationValue"] = huge
+    path = tmp_path / "oversized.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with pytest.raises(SystemExit) as error:
+        main(["learn", "--profile", str(path), "--offers", str(path)])
+    assert error.value.code == 2
+    message = capsys.readouterr().err
+    assert "finite number in [0, 1]" in message
+    assert "Traceback" not in message
