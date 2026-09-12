@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "paper_url": "https://doi.org/10.1007/s10489-023-05001-9",
+  "pdf_sha256": "55c3a47c3892702d872b28ded1321321a41974ce24945d72d89317c40a6bd745",
+  "pdf_reference": "Publisher PDF",
+  "verification": "Compared with the cited paper PDF; page numbers count from its first page.",
+  "figures": [
+    {
+      "file": "value-conflict.png",
+      "figure": "Figure 1a; fig-valueConflict",
+      "pdf_page": 5,
+      "source_file": "conflict1.png",
+      "source_sha256": "f8a80681be232ef3165a89b6b12aafbbae25087c42ce9035dfd30cf01692cdc8",
+      "sha256": "f8a80681be232ef3165a89b6b12aafbbae25087c42ce9035dfd30cf01692cdc8",
+      "conversion": "Unmodified source image.",
+      "display_file": "value-conflict.svg",
+      "display_sha256": "81dba3cc4416d8cd8b1582f279e1e61e2757e194a9c3c2d6903775ede80562eb",
+      "display_note": "SVG places the unmodified image over white, matching the paper and keeping black text visible in dark themes."
+    },
+    {
+      "file": "issue-conflict.png",
+      "figure": "Figure 1b; fig-issueConflict",
+      "pdf_page": 5,
+      "source_file": "conflict2.png",
+      "source_sha256": "5fc78bdf8476e8067bdcd72cd25a126abef2313c5637b679d0357282c4315b57",
+      "sha256": "5fc78bdf8476e8067bdcd72cd25a126abef2313c5637b679d0357282c4315b57",
+      "conversion": "Unmodified source image.",
+      "display_file": "issue-conflict.svg",
+      "display_sha256": "e71e4ea8462fbb50fcbe07201c89c32901f67e3e8a22fe5f910ebbceb5cba74a",
+      "display_note": "SVG places the unmodified image over white, matching the paper and keeping black text visible in dark themes."
+    },
+    {
+      "file": "grocery-rmse.png",
+      "figure": "Figure 5a; fig-RMSEGrocery",
+      "pdf_page": 9,
+      "source_file": "RMSEHybrid.PNG",
+      "source_sha256": "10c52cd12bfce23f8f79f0916c2f25b127f6e382e5949ea4035478ecc4aadb15",
+      "sha256": "10c52cd12bfce23f8f79f0916c2f25b127f6e382e5949ea4035478ecc4aadb15",
+      "conversion": "Unmodified source image.",
+      "display_file": "grocery-rmse.svg",
+      "display_sha256": "8f11efc18b396a7d0feb42a8743be45a3a58d28cac344964006516ec3acf23d9",
+      "display_note": "SVG places the unmodified image over white, matching the paper and keeping black text visible in dark themes."
+    },
+    {
+      "file": "grocery-spearman.png",
+      "figure": "Figure 5b; fig-SpearmanGrocery",
+      "pdf_page": 9,
+      "source_file": "HybridSpearman.PNG",
+      "source_sha256": "6af6280956be5eafadba68c767512db142bae30dc8a8ef27ac6f18e49671480f",
+      "sha256": "6af6280956be5eafadba68c767512db142bae30dc8a8ef27ac6f18e49671480f",
+      "conversion": "Unmodified source image.",
+      "display_file": "grocery-spearman.svg",
+      "display_sha256": "4b53c5a17dbad3bb3a4ff46c7ae44e329475c9eab2c29ec3a7b543efa3999bf6",
+      "display_note": "SVG places the unmodified image over white, matching the paper and keeping black text visible in dark themes."
+    }
+  ]
+}

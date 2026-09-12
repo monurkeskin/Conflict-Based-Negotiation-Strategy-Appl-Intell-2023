@@ -1,4 +1,4 @@
-# CBOM · Conflict-Based Opponent Modeling
+# Conflict-Based Negotiation Strategy for Human-Agent Negotiation — [Applied Intelligence 2023]
 
 Learn an opponent's preferences from their offers, then use those estimates to
 choose negotiation offers that balance both parties' interests.
@@ -17,7 +17,67 @@ Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 [How it works](docs/method.md) · [Performance](docs/performance.md) ·
 [Cite the paper](#cite-the-paper)
 
-![CBOM workflow: received offers update preference estimates; the negotiation strategy uses those estimates to choose or accept an offer.](docs/assets/workflow.svg)
+People rarely reveal their complete preferences during a negotiation. Their
+offers provide clues, but a frequency count can miss the trade-offs between
+issues. **CBOM learns a preference ordering by looking for conflicts between
+its current beliefs and the offers it observes.** The negotiation strategy
+then uses that model to choose among offers it finds acceptable for itself.
+
+## Learn from conflicting preferences
+
+| A value-order conflict | An issue-order conflict |
+| --- | --- |
+| ![Paper Figure 1a: a single changed issue value conflicts with the model's current preference ordering.](docs/paper/value-conflict.svg) | ![Paper Figure 1b: a trade-off across two issues conflicts with their estimated importance order.](docs/paper/issue-conflict.svg) |
+
+*Figure 1 from the paper. CBOM compares offers under a concession assumption:
+earlier offers are treated as evidence of more preferred outcomes. The resulting
+comparisons can challenge either a value ranking or an issue ranking.*
+
+Algorithm 1 accumulates that evidence and updates the opponent model. Algorithm 2
+uses it in a hybrid time/behavior strategy: form a band around the agent's target
+utility, find candidate bids and favor an offer with high estimated utility for
+the opponent. [Method walkthrough](docs/method.md).
+
+## Evidence from human offers and automated negotiations
+
+The paper evaluates preference estimation on two human–agent datasets: deserted
+island negotiations with **42 participants / 84 sessions** and fruit-sharing
+negotiations with **28 participants / 56 sessions**. The following figure shows
+the second study:
+
+| Utility-estimation error: lower is better | Outcome-rank correlation: higher is better |
+| --- | --- |
+| ![Paper Figure 5a: RMSE distributions for Frequentist, Scientist and CBOM in the grocery study.](docs/paper/grocery-rmse.svg) | ![Paper Figure 5b: Spearman distributions for the same opponent models.](docs/paper/grocery-spearman.svg) |
+
+*Figure 5. These are the published study distributions; the original figure's
+significance annotations are retained.*
+
+The automated evaluation uses six domains in Genius. Table 4 reports the following
+mean Spearman correlations; the full table also includes variability and RMSE:
+
+| Domain | CBOM | Scientist | HardHeaded |
+| --- | ---: | ---: | ---: |
+| Car | 0.73 | 0.29 | 0.33 |
+| Energy Grid | 0.68 | 0.25 | 0.25 |
+| Grocery | 0.81 | 0.85 | 0.82 |
+| Party | 0.90 | 0.82 | 0.50 |
+| Politics | 0.82 | 0.86 | 0.79 |
+| Supermarket | 0.66 | 0.58 | 0.56 |
+
+CBOM has the highest reported mean correlation in four of the six domains;
+Scientist is higher in Grocery and Politics. The paper separately evaluates the
+complete agent's utility, agreement rate and distance to the Nash outcome.
+[Paper Sections 5.1–5.2](https://doi.org/10.1007/s10489-023-05001-9) ·
+[Figure and table sources](docs/paper/README.md).
+
+## Explore CBOM in Python or Java
+
+This repository provides standalone engines and NegoLog integrations. The
+maintained model uses compact evidence storage and the finalized public CBOM
+behavior. **Its issue-weight formula differs from the paper**; the policy and
+edge-case choices are described in [implementation differences](docs/provenance.md#what-changed).
+The demos below let you inspect this implementation. They do not recompute the
+published human studies or Genius tournament results.
 
 ## What you can do
 
