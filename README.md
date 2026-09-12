@@ -7,7 +7,7 @@ Maintained Python and Java code for **[Conflict-Based Negotiation Strategy for H
 Negotiation](https://doi.org/10.1007/s10489-023-05001-9)** — Mehmet Onur Keskin,
 Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 
-[![Tests](https://github.com/monurkeskin/CBOM/actions/workflows/tests.yml/badge.svg)](https://github.com/monurkeskin/CBOM/actions/workflows/tests.yml)
+[![Tests](https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/actions/workflows/tests.yml/badge.svg)](https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/actions/workflows/tests.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Paper DOI](https://img.shields.io/badge/Paper-10.1007%2Fs10489--023--05001--9-006b75)](https://doi.org/10.1007/s10489-023-05001-9)
@@ -39,7 +39,7 @@ search for small domains and a bounded, explicitly reported sample for larger
 ones. It is designed for bilateral, discrete, additive-utility negotiation.
 
 **Version 1.1.0 is a maintained implementation.** Its Python opponent model preserves
-the finalized public [NegoLog V2](https://github.com/monurkeskin/NegoLogV2) behavior
+the finalized public [NegoLog V2](https://github.com/monurkeskin/NegoLog-IJCAI-2024) behavior
 using more compact evidence storage. Its negotiation strategy implements the
 paper's Algorithm 2 with documented defaults and edge-case handling. The current
 issue-weight formula differs from the paper, and these examples do not reproduce
@@ -66,7 +66,7 @@ This Java engine is framework-neutral; a GENIUS-specific plugin is not bundled.
 ## Run your first negotiation
 
 ```bash
-git clone https://github.com/monurkeskin/CBOM.git
+git clone https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023.git CBOM
 cd CBOM
 python3 -m venv .venv
 source .venv/bin/activate

@@ -9,8 +9,8 @@ date-released: "2026-09-09"
 authors:
   - family-names: Keskin
     given-names: Mehmet Onur
-repository-code: https://github.com/monurkeskin/CBOM
-url: https://github.com/monurkeskin/CBOM
+repository-code: https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023
+url: https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023
 license: GPL-3.0-only
 keywords:
   - opponent modeling

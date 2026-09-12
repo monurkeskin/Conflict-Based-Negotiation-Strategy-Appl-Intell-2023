@@ -17,7 +17,7 @@ interface. The CBOM opponent model is part of the bidding agent in both routes.
 | Python CBOM against an existing agent | NegoLog V2: `python run.py tournament_configurations/cbom-python.yaml` |
 | Compare Python CBOM, Java CBOM and Boulware | NegoLog V2: build the bundled Java agent, then run `tournament_configurations/cbom.yaml` |
 
-The maintained [NegoLog V2 repository](https://github.com/monurkeskin/NegoLogV2)
+The maintained [NegoLog V2 repository](https://github.com/monurkeskin/NegoLog-IJCAI-2024)
 and the [upstream NegoLog repository](https://github.com/aniltrue/NegoLog) host the
 framework integration. Use a revision containing `agents/CBOM/`; each includes
 its own copy of the public core. A neighboring CBOM clone is not required.

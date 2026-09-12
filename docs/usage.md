@@ -174,4 +174,4 @@ The command reports invalid offer line numbers. Empty lines are allowed.
 
 For a reproducible bug report, include version, Python version, a minimal
 synthetic profile, offer sequence, settings and the traceback. Use the
-[issue tracker](https://github.com/monurkeskin/CBOM/issues).
+[issue tracker](https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/issues).
