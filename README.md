@@ -8,6 +8,7 @@ Negotiation](https://doi.org/10.1007/s10489-023-05001-9)** — Mehmet Onur Keski
 Berk Buzcu and Reyhan Aydoğan, *Applied Intelligence* (2023).
 
 [![Tests](https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/actions/workflows/tests.yml/badge.svg)](https://github.com/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023/branch/main/graph/badge.svg)](https://codecov.io/gh/monurkeskin/Conflict-Based-Negotiation-Strategy-Appl-Intell-2023)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Paper DOI](https://img.shields.io/badge/Paper-10.1007%2Fs10489--023--05001--9-006b75)](https://doi.org/10.1007/s10489-023-05001-9)
